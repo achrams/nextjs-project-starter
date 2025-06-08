@@ -1,0 +1,50 @@
+-- User table
+CREATE TABLE IF NOT EXISTS "User" (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  fullname VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL
+);
+
+-- Product table
+CREATE TABLE IF NOT EXISTS "Product" (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(100),
+  category VARCHAR(100),
+  image_url TEXT,
+  product_code VARCHAR(100) UNIQUE,
+  price INTEGER NOT NULL,
+  qty INTEGER NOT NULL DEFAULT 0
+);
+
+-- Invoice table
+CREATE TABLE IF NOT EXISTS "Invoice" (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES "User"(id) ON DELETE SET NULL,
+  invoice_number VARCHAR(255) UNIQUE NOT NULL,
+  product_ids INTEGER[] NOT NULL,
+  qty INTEGER[] NOT NULL,
+  prices INTEGER[] NOT NULL,
+  total INTEGER NOT NULL,
+  status VARCHAR(50) NOT NULL DEFAULT 'pending',
+  tanggal DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+-- Penjualan table
+CREATE TABLE IF NOT EXISTS "Penjualan" (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES "User"(id) ON DELETE SET NULL,
+  nomor_penjualan VARCHAR(255) UNIQUE NOT NULL,
+  invoice_id INTEGER REFERENCES "Invoice"(id) ON DELETE SET NULL,
+  tanggal DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+-- Restock table
+CREATE TABLE IF NOT EXISTS "Restock" (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES "User"(id) ON DELETE SET NULL,
+  product_id INTEGER REFERENCES "Product"(id) ON DELETE SET NULL,
+  qty INTEGER NOT NULL,
+  tanggal DATE NOT NULL DEFAULT CURRENT_DATE
+);
